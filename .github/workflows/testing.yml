@@ -26,7 +26,7 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
           SKIP_DEPLOY: ${{ contains(join(env.COMMIT_MESSAGES), '#skip') }}
-        run: echo "$SKIP_DEPLOY"; echo ${{ github.event_name == 'push' }}; echo ${{github.event_name == 'push' && !env.SKIP_DEPLOY}}
+        run: echo ${{ env.SKIP_DEPLOY}}; echo ${{ github.event_name == 'push' }}; echo ${{github.event_name == 'push' && !env.SKIP_DEPLOY}}
     outputs:
       SKIP_DEPLOY: ${{ env.SKIP_DEPLOY }}
 
