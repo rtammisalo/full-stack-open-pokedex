@@ -12,6 +12,9 @@ jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-20.04
     environment: Deployment
+    env:
+      COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+      SKIP_DEPLOY: contains(join($COMMIT_MESSAGES), '#skip')
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
@@ -40,6 +43,7 @@ jobs:
           healthcheck: "https://${{secrets.HEROKU_APP_NAME}}.herokuapp.com/health"
           rollbackonhealthcheckfailed: true
         if: ${{ github.event_name == 'push' }}
+        if: $SKIP_DEPLOY
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -55,3 +59,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
         if: ${{ github.event_name == 'push' }}
+        if: $SKIP_DEPLOY
