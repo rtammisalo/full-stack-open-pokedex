@@ -42,8 +42,7 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           healthcheck: "https://${{secrets.HEROKU_APP_NAME}}.herokuapp.com/health"
           rollbackonhealthcheckfailed: true
-        if: ${{ github.event_name == 'push' }}
-        if: $SKIP_DEPLOY
+        if: ${{ github.event_name == 'push' && !$SKIP_DEPLOY }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -58,5 +57,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-        if: ${{ github.event_name == 'push' }}
-        if: $SKIP_DEPLOY
+        if: ${{ github.event_name == 'push' && !$SKIP_DEPLOY }}
