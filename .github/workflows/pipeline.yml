@@ -42,6 +42,22 @@ jobs:
           healthcheck: "https://${{secrets.HEROKU_APP_NAME}}.herokuapp.com/health"
           rollbackonhealthcheckfailed: true
         if: ${{ (github.event_name == 'push') && (env.SKIP_DEPLOY == 'false') }}
+      - name: Notify Discord on success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ success() && (github.event_name == 'push') && (env.SKIP_DEPLOY == 'false')}}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: A new version of Pokedex deployed to Heroku
+          description: To [https://damp-atoll-21040.herokuapp.com/](https://damp-atoll-21040.herokuapp.com/) by ${{ toJson(github.event.commits[0].committer.username) }}
+          severity: info
+      - name: Notify Discord on failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: New build failed..
+          description: Broken commit [${{ toJson(github.event.commits[0].url) }}](${{ toJson(github.event.commits[0].url) }}) by ${{ toJson(github.event.commits[0].committer.username) }}
+          severity: error
     outputs:
       SKIP_DEPLOY: ${{ env.SKIP_DEPLOY }}
 
