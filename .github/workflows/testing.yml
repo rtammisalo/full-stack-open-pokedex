@@ -25,9 +25,9 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
       - name: echo SKIP_DEPLOY
-        run: echo ${{ env.SKIP_DEPLOY }}
+        run: echo ${{ env.SKIP_DEPLOY == true }}
       - name: echo not SKIP_DEPLOY
-        run: echo ${{ !(env.SKIP_DEPLOY) }}
+        run: echo ${{ !(env.SKIP_DEPLOY == true) }}
       - name: echo event_name == push
         run: echo ${{ github.event_name == 'push' }}
       - name: echo push AND !skip
