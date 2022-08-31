@@ -8,6 +8,8 @@ on:
 jobs:
   a_test_job:
     runs-on: ubuntu-20.04
+    env:
+      SKIP_DEPLOY: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
     steps:
       - uses: actions/checkout@v2
       - name: github context
@@ -23,10 +25,9 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
       - name: testing commit skip
-        env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-          SKIP_DEPLOY: ${{ contains(join(env.COMMIT_MESSAGES), '#skip') }}
-        run: echo ${{ !env.SKIP_DEPLOY}}; echo ${{ github.event_name == 'push' }}; echo ${{ (github.event_name == 'push') && !env.SKIP_DEPLOY}}; echo ${{ env.COMMIT_MESSAGES }}; echo ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+        run: echo ${{ !env.SKIP_DEPLOY}}; echo ${{ github.event_name == 'push' }}; echo ${{ (github.event_name == 'push') && !env.SKIP_DEPLOY}}; 
+      - name: tesing without env
+        run: echo ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
     outputs:
       SKIP_DEPLOY: ${{ env.SKIP_DEPLOY }}
 
