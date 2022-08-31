@@ -31,7 +31,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           start: npm run start-prod
-          wait-on: http://localhost:5000
+          wait-on: http://localhost:5000/
       - uses: actions/checkout@v2
       - name: deploy to heroku
         uses: akhileshns/heroku-deploy@v3.12.12
@@ -48,7 +48,7 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           text: A new version of Pokedex deployed to Heroku
-          description: To [https://damp-atoll-21040.herokuapp.com/](https://damp-atoll-21040.herokuapp.com/) by ${{ toJson(github.event.commits[0].committer.username) }}
+          description: To [https://damp-atoll-21040.herokuapp.com/](https://damp-atoll-21040.herokuapp.com/) by ${{ github.event.head_commit.author.username }}
           severity: info
       - name: Notify Discord on failure
         uses: rjstone/discord-webhook-notify@v1
@@ -56,7 +56,7 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           text: New build failed..
-          description: Broken commit [${{ toJson(github.event.commits[0].url) }}](${{ toJson(github.event.commits[0].url) }}) by ${{ toJson(github.event.commits[0].committer.username) }}
+          description: Broken commit [${{ github.event.head_commit.url }}](${{ github.event.head_commit.url }}) by ${{ github.event.head_commit.author.username }}
           severity: error
     outputs:
       SKIP_DEPLOY: ${{ env.SKIP_DEPLOY }}
