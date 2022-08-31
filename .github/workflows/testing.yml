@@ -30,7 +30,7 @@ jobs:
         run: echo ${{ !env.SKIP_DEPLOY }}
       - name: echo event_name == push
         run: echo ${{ github.event_name == 'push' }}
-      - name: echo push AND skip
+      - name: echo push AND !skip
         run: echo ${{ (github.event_name == 'push') && !env.SKIP_DEPLOY}}
       - name: testing skip_deploy without env
         run: echo ${{ !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
