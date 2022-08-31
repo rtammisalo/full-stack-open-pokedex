@@ -27,11 +27,11 @@ jobs:
       - name: echo SKIP_DEPLOY
         run: echo ${{ env.SKIP_DEPLOY == true }}
       - name: echo not SKIP_DEPLOY
-        run: echo ${{ !(env.SKIP_DEPLOY == true) }}
+        run: echo ${{ (env.SKIP_DEPLOY == false) }}
       - name: echo event_name == push
         run: echo ${{ github.event_name == 'push' }}
       - name: echo push AND !skip
-        run: echo ${{ (github.event_name == 'push') && !(env.SKIP_DEPLOY == true) }}
+        run: echo ${{ (github.event_name == 'push') && (env.SKIP_DEPLOY == false) }}
       - name: testing skip_deploy without env
         run: echo ${{ !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
     outputs:
