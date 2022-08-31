@@ -48,6 +48,9 @@ jobs:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
     environment: Deployment
+    env:
+      COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+      SKIP_DEPLOY: contains(join($COMMIT_MESSAGES), '#skip')
     steps:
       - uses: actions/checkout@v2
         with:
