@@ -25,14 +25,14 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
       - name: testing commit skip
-        run: echo ${{ !env.SKIP_DEPLOY}}; echo ${{ github.event_name == 'push' }}; echo ${{ (github.event_name == 'push') && !env.SKIP_DEPLOY}}; 
+        run: echo ${{ env.SKIP_DEPLOY }}; echo ${{ github.event_name == 'push' }}; echo ${{ (github.event_name == 'push') && !env.SKIP_DEPLOY}}; 
       - name: tesing without env
         run: echo ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
     outputs:
       SKIP_DEPLOY: ${{ env.SKIP_DEPLOY }}
 
   test_tags:
-    needs: [a_test_job]
+    needs: a_test_job
     runs-on: ubuntu-20.04
     steps:
-      - run: echo ${{ needs.simple_deployment_pipeline.SKIP_DEPLOY }}
+      - run: echo ${{ !needs.a_test_job.outputs.SKIP_DEPLOY }}
